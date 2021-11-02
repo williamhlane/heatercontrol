@@ -1,0 +1,14 @@
+{
+  "name": "heatercontrol",
+  "version": "1.0.0",
+  "description": "This will send the temperature information to the server. ",
+  "main": "index.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^3.0.0"
+  }
+}
