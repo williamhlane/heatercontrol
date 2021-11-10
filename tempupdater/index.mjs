@@ -17,18 +17,34 @@ const writeToLog = (what) => {
 }
 //send with fetch
 const sendTemp = (temp) => {
-	writeToLog(`The temp is ${temp}.`);
+	const body = `{ "room" : "bedroom", "temp" : "${temp}", "token" : "999999999" }`;
+	fetch(`http://192.168.0.180:3000`, {
+		method: 'PUT',
+		mode: 'cors',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: body,
+	}).then((res) => {
+		res.json()
+	}).then((res) => {
+		writeToLog(`${res.results}`);
+	}).catch((error) => {
+		writeToLog(`${error}`);
+	})
+
 }
 setTimeout(() => {
 	exec(`sudo gettemp -f`, (error, stdout, stderr) => {
-	if(error) {
-		writeToLog(error);
-	} else if(stdout) {
-		sendTemp(stdout);
-	} else {
-		writeToLog(stderr);
-	}
-});
+		if (error) {
+			writeToLog(error);
+		} else if (stdout) {
+			sendTemp(stdout);
+		} else {
+			writeToLog(stderr);
+		}
+	});
 }, 10000);
 
 
