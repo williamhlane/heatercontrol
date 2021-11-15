@@ -6,19 +6,19 @@ import { exec } from 'child_process';
 const writeToLog = (what) => {
 	exec(`echo '${Date(0)} ${what}' >> ./log`, (error, stdout, stderr) => {
 		if (error) {
-			console.warn(error);
+			console.log(error);
 		} else if (stdout) {
 			console.log(stdout);
 		} else {
 			console.log(stderr);
 		}
-		process.exit();
 	});
+	process.exit();//PROCESS>EXIT NEEDED TO BE ON THE OUTSIDE
 }
 //send with fetch
 const sendTemp = (temp) => {
-	const body = `{ "room" : "bedroom", "temp" : "${temp}", "token" : "999999999" }`;
-	fetch(`http://192.168.0.180:3000`, {
+	const body = `{ "roomName" : "bedroom", "currentTemp" : "${parseInt(temp)}", "token" : "999999999", "timePassedToSrv" : "${Date()}" }`;
+	fetch(`http://192.168.0.180:3000/updatetemp`, {
 		method: 'PUT',
 		mode: 'cors',
 		headers: {
@@ -46,5 +46,3 @@ setTimeout(() => {
 		}
 	});
 }, 10000);
-
-

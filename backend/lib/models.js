@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 
 const db = require('./databaseconnect');
 const Rooms = db.define('Rooms', {
-    name: {
+    roomName: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -17,4 +17,5 @@ const Rooms = db.define('Rooms', {
 },{
     /////////////////////////////////
 });
-module.exports = Rooms;
+db.sync();
+module.exports.Rooms = Rooms;
