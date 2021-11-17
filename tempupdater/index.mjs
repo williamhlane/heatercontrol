@@ -13,7 +13,7 @@ const writeToLog = (what) => {
 			console.log(stderr);
 		}
 	});
-	process.exit();//PROCESS>EXIT NEEDED TO BE ON THE OUTSIDE
+	process.exit();
 }
 //send with fetch
 const sendTemp = (temp) => {

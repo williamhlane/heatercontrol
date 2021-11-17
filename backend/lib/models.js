@@ -10,12 +10,33 @@ const Rooms = db.define('Rooms', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    currentTemp:{
-	type: DataTypes.INTEGER,
+    currentTemp: {
+        type: DataTypes.INTEGER,
         allowNull: false
     }
-},{
+}, {
+    /////////////////////////////////
+});
+const Units = db.define('Rooms', {
+    unitName: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    timePassedToSrv: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    desiredTemp: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    controlRoom: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+}, {
     /////////////////////////////////
 });
 db.sync();
+module.exports.Units = Units;
 module.exports.Rooms = Rooms;
