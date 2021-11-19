@@ -8,17 +8,44 @@ let Units = models.Units;
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
+
+router.post('/createunit', async (req, res, next) => {
+  let count = 0;
+  await Units.count({ where: { unitName: req.body.unitName.toLowerCase() } }).then((res) => { count = res; });
+  if (count === 0) {
+    await Units.create({
+      unitName: req.body.unitName.toLowerCase(),
+      timePassedToSrv: req.body.timePassedToSrv,
+      desiredTemp: 0,
+      controlRoom: "unset"
+    }).then((results) => {
+      res.send(`{ "results" : "Created" }`);
+    }).catch((error) => {
+      res.send(`{ "results" : "${error}" }`);
+    });
+  } else {
+    res.send(`{ "results" : "That unit name is taken."}`);
+  }
+});
 router.post('/createroom', async (req, res, next) => {
-  ///CHECK IF ROOM IS ALREADY CREATED------//
-  await Rooms.create({
-    roomName: req.body.roomName.toLowerCase(),
-    timePassedToSrv: Date(),
-    currentTemp: 90,
-  }).then((results) => {
-    res.send(`{ "results" : "${results}" }`);
-  }).catch((error) => {
-    console.log(error);
-  });
+  let count = 0;
+  await Rooms.count({ where: { roomName: req.body.roomName.toLowerCase() } }).then((res) => { count = res; });
+  if (count === 0) {
+    await Rooms.create({
+      roomName: req.body.roomName.toLowerCase(),
+      timePassedToSrv: req.body.timePassedToSrv,
+      currentTemp: 90,
+    }).then((results) => {
+      res.send(`{ "results" : "Create" }`);
+    }).catch((error) => {
+      res.send(`{ "results" : "${error}" }`);
+      console.log(error);
+    });
+  } else {
+    console.log(`${req.body.roomName.toLowerCase()} already exists.`)
+    res.send(`{ "results" : "That room already exists." }`);
+
+  }
 });
 router.put('/updatetemp', async (req, res, next) => {
   if (req.body.token === "999999999") {

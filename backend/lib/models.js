@@ -17,7 +17,7 @@ const Rooms = db.define('Rooms', {
 }, {
     /////////////////////////////////
 });
-const Units = db.define('Rooms', {
+const Units = db.define('Units', {
     unitName: {
         type: DataTypes.STRING,
         allowNull: false

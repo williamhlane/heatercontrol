@@ -9,7 +9,7 @@
   <script>
     const newroom = (e) => {
       e.preventDefault();
-      const body = `{ "roomName" : "${document.getElementById('roomName').value}", "currentTemp" : "100", "token" : "999999999", "timePassedToSrv" : "${Date()}" }`;
+      const body = `{ "roomName" : "${document.getElementById('roomName').value}", "currentTemp" : "100", "timePassedToSrv" : "${Date()}" }`;
       fetch('http://192.168.0.180:3000/createroom', {
         method: 'POST',
         mode: 'cors',
@@ -19,7 +19,26 @@
         },
         body: body,
       }).then((res) => {
-        res.json()
+        return res.json();
+      }).then((res) => {
+        console.log(res.results);
+      }).catch((error) => {
+        console.log(error);
+      });
+    }
+    const newunit = (e) => {
+      e.preventDefault();
+      const body = `{ "unitName" : "${document.getElementById('unitName').value}", "timePassedToSrv" : "${Date()}" }`;
+      fetch('http://192.168.0.180:3000/createunit', {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: body,
+      }).then((res) => {
+        return res.json();
       }).then((res) => {
         console.log(res.results);
       }).catch((error) => {
@@ -28,10 +47,15 @@
     }
   </script>
   <form onsubmit="newroom(event)">
+    <label>Create Room</label>
     <input type='text' id="roomName" />
     <input type='submit' />
   </form>
-
+  <form onsubmit="newunit(event)">
+    <label>Create Unit</label>
+    <input type='text' id="unitName" />
+    <input type='submit' />
+  </form>
 </body>
 
 </html>
