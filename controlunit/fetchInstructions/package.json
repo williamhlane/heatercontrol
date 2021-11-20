@@ -1,0 +1,14 @@
+{
+  "name": "controlunit",
+  "version": "1.0.0",
+  "description": "This application with check if the heater is suppose to be on or off.",
+  "main": "index.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^3.1.0"
+  }
+}
