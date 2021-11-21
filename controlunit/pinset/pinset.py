@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #make sure RPi.GPIO is install with sudo pip3 install --upgrade RPi.GPIO
-#Written by William Harrison Lane III harrisonwd.com
+#Written by William Harrison Lane III harrisonswd.com
 import RPi.GPIO as GPIO
 import sys
 if(len(sys.argv) == 1 or len(sys.argv) == 2 or len(sys.argv) > 3):
