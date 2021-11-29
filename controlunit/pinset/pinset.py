@@ -1,6 +1,8 @@
 #!/usr/bin/python3
+#make sure Python3 3 is installed as well as pip with sudo apt-get install python3 python3-pip
 #make sure RPi.GPIO is install with sudo pip3 install --upgrade RPi.GPIO
 #Written by William Harrison Lane III harrisonswd.com
+#For Raspberry Pi 4 Model b
 import RPi.GPIO as GPIO
 import sys
 if(len(sys.argv) == 1 or len(sys.argv) == 2 or len(sys.argv) > 3):

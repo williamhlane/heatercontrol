@@ -7,10 +7,11 @@
 
 <body>
   <script>
+    const backend = "http://192.168.0.180:3001";
     const newroom = (e) => {
       e.preventDefault();
       const body = `{ "roomName" : "${document.getElementById('roomName').value}", "currentTemp" : "100", "timePassedToSrv" : "${Date()}" }`;
-      fetch('http://192.168.0.180:3000/createroom', {
+      fetch(`${backend}/createroom`, {
         method: 'POST',
         mode: 'cors',
         headers: {
@@ -29,7 +30,7 @@
     const newunit = (e) => {
       e.preventDefault();
       const body = `{ "unitName" : "${document.getElementById('unitName').value}", "timePassedToSrv" : "${Date()}" }`;
-      fetch('http://192.168.0.180:3000/createunit', {
+      fetch(`${backend}/createunit`, {
         method: 'POST',
         mode: 'cors',
         headers: {
@@ -45,6 +46,25 @@
         console.log(error);
       });
     }
+      const newLocation = (e) => {
+        e.preventDefault();
+        const body = `{ "locationName" : "${document.getElementById('locationName').value}", "timePassedToSrv" : "${Date()}" }`;
+        fetch(`${backend}/location`, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: body,
+        }).then((res) => {
+          return res.json();
+        }).then((res) => {
+          console.log(res.results);
+        }).catch((error) => {
+          console.log(error);
+        });
+      }
   </script>
   <form onsubmit="newroom(event)">
     <label>Create Room</label>
@@ -52,8 +72,13 @@
     <input type='submit' />
   </form>
   <form onsubmit="newunit(event)">
-    <label>Create Unit</label>
+    <label>Create Unit</label><!---NEEDS LOCATION BEFORE IT WILL WORK AGAIN-->
     <input type='text' id="unitName" />
+    <input type='submit' />
+  </form>
+  <form onsubmit="newLocation(event)">
+    <label>Create Location</label>
+    <input type='text' id="locationName" />
     <input type='submit' />
   </form>
 </body>

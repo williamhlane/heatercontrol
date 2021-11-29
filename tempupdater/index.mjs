@@ -1,6 +1,8 @@
 #!/home/william/.nvm/versions/node/v16.13.0/bin/node
 import fetch from 'node-fetch';
 import { exec } from 'child_process';
+const url = 'http://192.168.0.180:3001';
+const roomId = '7';
 "use strict";
 ////WRITE TO LOG
 const writeToLog = (what) => {
@@ -17,8 +19,8 @@ const writeToLog = (what) => {
 }
 //send with fetch
 const sendTemp = (temp) => {
-	const body = `{ "roomName" : "bedroom", "currentTemp" : "${parseInt(temp)}", "token" : "999999999", "timePassedToSrv" : "${Date()}" }`;
-	fetch(`http://192.168.0.180:3000/updatetemp`, {
+	const body = `{ "id" : "${roomId}", "currentTemp" : "${parseInt(temp)}", "token" : "999999999", "timePassedToSrv" : "${Date()}" }`;
+	fetch(`${url}/updatetemp`, {
 		method: 'PUT',
 		mode: 'cors',
 		headers: {

@@ -1,6 +1,9 @@
 #!/home/pi/.nvm/versions/node/v16.13.0/bin/node
 import fetch from 'node-fetch';
 import { exec } from 'child_process';
+const url = 'http://192.168.0.180:3001';
+const myId = '1';
+const pinNuber = '4'; 
 "use strict";
 ////WRITE TO LOG
 const writeToLog = (what) => {
@@ -15,8 +18,8 @@ const writeToLog = (what) => {
 	});
 	process.exit();
 }
-const onoff = (onoff) => {//I put onoff above fecthInstructions
-	exec(`pinset ${onoff} 4`, (error, stdout, stderr) => {
+const onoff = (onoff,pinNumber) => {
+	exec(`pinset ${onoff} ${pinNumber}`, (error, stdout, stderr) => {
 		if (error) {
 			writeToLog(error);
 		} else if (stdout) {
@@ -26,10 +29,9 @@ const onoff = (onoff) => {//I put onoff above fecthInstructions
 		}
 	});
 }
-//send with fetch
-const fetchInstructions = (temp) => {
-	const body = `{ "roomName" : "bedroom", "currentTemp" : "${parseInt(temp)}", "token" : "999999999", "timePassedToSrv" : "${Date()}" }`;//Change body to get instructions
-	fetch(`http://192.168.0.180:3000/updatetemp`, {//change url
+const fetchInstructions = () => {
+	const body = `{ "unitId" : "${myId}", "token" : "999999999", "timePassedToSrv" : "${Date()}" }`;
+	fetch(`${url}/unitinstructions`, {
 		method: 'PUT',
 		mode: 'cors',
 		headers: {
@@ -40,11 +42,10 @@ const fetchInstructions = (temp) => {
 	}).then((res) => {
 		res.json()
 	}).then((res) => {
-		onoff(`${res.onoff}`);
+		onoff(`${res.onoff}`, `${pinNuber}`);
 	}).catch((error) => {
 		writeToLog(`${error}`);
 	})
 
 }
-
 setTimeout(() => { fetchInstructions(); }, 10000);
