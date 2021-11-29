@@ -28,6 +28,7 @@ router.get('/mainobject', async (req,res, next) => {
   }).catch((error) => {
     errors += error;
   });
+  //PUT ERRORS IN OBJECT
   console.log(errors);
   res.send(JSON.stringify(mainOb));
 });

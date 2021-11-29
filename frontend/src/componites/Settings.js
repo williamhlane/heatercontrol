@@ -1,5 +1,11 @@
-const Settings = () => {
-    const backend = "http://192.168.0.180:3001";
+const Settings = ({ mainObject, backend }) => {
+    let locationList = [];
+    for (let i = 0; i < mainObject[0].length; i++) {
+        locationList.push(mainObject[0][i]);
+    }
+    //[0]== LOCATIONS
+    //[1] == units
+    //[2] == rooms
     const newLocation = (e) => {
         e.preventDefault();
         const body = `{ "locationName" : "${document.getElementById('locationName').value}", "timePassedToSrv" : "${Date()}" }`;
@@ -84,8 +90,13 @@ const Settings = () => {
                 <form onSubmit={delLocation}>
                     <label>Delete Location</label>
                     <select>
-                        <option>placeholder</option>
-                    </select>
+                        
+                        {
+                        locationList.map((loc, index) => (
+                            <option key={index} value={loc.id}>{loc.locName}</option>
+                        ))
+                        }
+                        </select>
                     <input type='submit' />
                 </form>
             </div>
