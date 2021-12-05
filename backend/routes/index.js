@@ -10,21 +10,33 @@ router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
 //ADD CREATE LOCATION
-router.get('/mainobject', async (req,res, next) => {
+router.get('/mainobject', async (req, res, next) => {
   let mainOb = [];
   let errors = '';
   await Locations.findAll().then((results) => {
-      mainOb.push(results);
+    let temp = [];
+    for (let i = 0; i < results.length; i++) {
+      temp.push(results[i].dataValues);
+    }
+    mainOb.push(temp);
   }).catch((error) => {
     errors += error;
   });
   await Units.findAll().then((results) => {
-    mainOb.push(results);
+    let temp = [];
+    for (let i = 0; i < results.length; i++) {
+      temp.push(results[i].dataValues);
+    }
+    mainOb.push(temp);
   }).catch((error) => {
     errors += error;
   });
   await Rooms.findAll().then((results) => {
-    mainOb.push(results);
+    let temp = [];
+    for (let i = 0; i < results.length; i++) {
+      temp.push(results[i].dataValues);
+    }
+    mainOb.push(temp);
   }).catch((error) => {
     errors += error;
   });
@@ -48,14 +60,68 @@ router.post('/location', async (req, res, next) => {
     res.send(`{"results" : "Location already exists."}`)
   }
 });
-router.post('/createunit', async (req, res, next) => {
+router.delete('/location', async (req, res, next) => {
+  ////LEFT OFF HERE NEED TO TEST THAT ROOMS AND UNITS ARE BEING DELETED///
+  let locCount;
+  let send;
+  await Locations.count({ where: { id: req.body.locationId } }).then((count) => { locCount = count });
+  if (locCount > 0) {
+    await Locations.destroy({
+      where: {
+        id: req.body.locationId
+      }
+    }).then((results) => {
+      send = `{ "results" : "Deleted" }`;
+    }).catch((error) => {
+      send = `{ "results" : "${error}" }`;
+    });
+  } else {
+    send = `{"results" : "Location does not exists."}`;
+  }
+
+  ////THE DELETE UNITS WILL GO HERE
+  let unitCount;
+  await Units.count({ where: { locationId: req.body.locationId } }).then((count) => { unitCount = count });
+  if (unitCount > 0) {
+    await Units.destroy({
+      where: {
+        locationId: req.body.locationId
+      }
+    }).then((results) => {
+      console.log(results);
+    }).catch((error) => {
+      console.log(`{ "results" : "${error}" }`);
+    });
+  } else {
+    console.log(`{"results" : "Unit does not exists."}`)
+  }
+  //THE DELETE ROOMS WILL GO HERE
+  let roomsCount;
+  await Rooms.count({ where: { locationId: req.body.locationId } }).then((count) => { roomsCount = count });
+  if (roomsCount > 0) {
+    await Rooms.destroy({
+      where: {
+        locationId: req.body.locationId
+      }
+    }).then((results) => {
+      console.log(results);
+    }).catch((error) => {
+      console.log(`{ "results" : "${error}" }`);
+    });
+  } else {
+    console.log(`{"results" : "Location does not exists."}`)
+  }
+  //////////
+  res.send(send);
+});
+router.post('/units', async (req, res, next) => {
   let count = 0;
   await Units.count({ where: { unitName: req.body.unitName.toLowerCase() } }).then((res) => { count = res; });///findOrCreate????
   if (count === 0) {
     await Units.create({
       unitName: req.body.unitName.toLowerCase(),
       timePassedToSrv: req.body.timePassedToSrv,
-      location: req.body.location,
+      locationId: req.body.locationId,
       desiredTemp: 0,
       controlRoom: "unset"
     }).then((results) => {
@@ -88,6 +154,9 @@ router.post('/createroom', async (req, res, next) => {
 
   }
 });
+
+
+////\/CONTROL AND TEMP UNITS\//////////////////////////////////////////////////
 router.put('/unitinstructions', async (req, res, next) => {
   if (req.body.token === "9999999999") {
     //send back pinNunmber

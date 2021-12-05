@@ -23,8 +23,8 @@ const Units = db.define('Units', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    location: {
-        type: DataTypes.STRING,
+    locationId: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     desiredTemp: {
@@ -47,8 +47,12 @@ const Rooms = db.define('Rooms', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    location: {
-        type: DataTypes.STRING,
+    locationId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    unitId: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     currentTemp: {
