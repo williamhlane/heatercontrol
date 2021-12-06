@@ -46,10 +46,10 @@ router.get('/mainobject', async (req, res, next) => {
 });
 router.post('/location', async (req, res, next) => {
   let locCount;
-  await Locations.count({ where: { locName: req.body.locationName } }).then((count) => { locCount = count });///findOrCreate?????
+  await Locations.count({ where: { locName: req.body.locName } }).then((count) => { locCount = count });///findOrCreate?????
   if (locCount === 0) {
     await Locations.create({
-      locName: req.body.locationName,
+      locName: req.body.locName,
       description: null
     }).then((results) => {
       res.send(`{ "results" : "Created" }`);
@@ -133,14 +133,54 @@ router.post('/units', async (req, res, next) => {
     res.send(`{ "results" : "That unit name is taken."}`);
   }
 });
-router.post('/createroom', async (req, res, next) => {
+router.delete('/units', async (req, res, next) => {
+
+  let send;
+  ////THE DELETE UNITS WILL GO HERE
+  let unitCount;
+  await Units.count({ where: { id: req.body.id } }).then((count) => { unitCount = count });
+  if (unitCount > 0) {
+    await Units.destroy({
+      where: {
+        id: req.body.id
+      }
+    }).then((results) => {
+      console.log(results);
+      send = `{ "results" : "Deleted" }`;
+    }).catch((error) => {
+      console.log(`{ "results" : "${error}" }`);
+    });
+  } else {
+    console.log(`{"results" : "Unit does not exists."}`)
+  }
+  //THE DELETE ROOMS WILL GO HERE
+  let roomsCount;
+  await Rooms.count({ where: { unitId: req.body.id } }).then((count) => { roomsCount = count });
+  if (roomsCount > 0) {
+    await Rooms.destroy({
+      where: {
+        unitId: req.body.id
+      }
+    }).then((results) => {
+      console.log(results);
+    }).catch((error) => {
+      console.log(`{ "results" : "${error}" }`);
+    });
+  } else {
+    console.log(`{"results" : "Rooms do not not exists."}`)
+  }
+  //////////
+  res.send(send);
+});
+router.post('/rooms', async (req, res, next) => {
   let count = 0;
   await Rooms.count({ where: { roomName: req.body.roomName.toLowerCase() } }).then((res) => { count = res; });
   if (count === 0) {
     await Rooms.create({
       roomName: req.body.roomName.toLowerCase(),
       timePassedToSrv: req.body.timePassedToSrv,
-      location: req.body.location,
+      locationId: req.body.locationId,
+      unitId: req.body.unitId,
       currentTemp: 90,
     }).then((results) => {
       res.send(`{ "results" : "Create" }`);
@@ -154,7 +194,28 @@ router.post('/createroom', async (req, res, next) => {
 
   }
 });
+router.delete('/rooms', async (req, res, next) => {
 
+  let send;
+  let roomsCount;
+  await Rooms.count({ where: { id: req.body.id } }).then((count) => { roomsCount = count });
+  if (roomsCount > 0) {
+    await Rooms.destroy({
+      where: {
+        id: req.body.id
+      }
+    }).then((results) => {
+      console.log(results);
+      send = `{ "results" : "Deleted" }`;
+    }).catch((error) => {
+      send = `{ "results" : "${error}" }`;
+    });
+  } else {
+    send = `{"results" : "Rooms do not not exists."}`;
+  }
+  //////////
+  res.send(send);
+});
 
 ////\/CONTROL AND TEMP UNITS\//////////////////////////////////////////////////
 router.put('/unitinstructions', async (req, res, next) => {

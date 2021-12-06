@@ -28,7 +28,7 @@ function App() {
       <header className="App-header">
         <span id="headerLeft"><h1>Heaters Control</h1></span><span id="headerRigt"> </span>
       </header>
-      <Settings mainObject={mainObject} backend={backend} setMainObject={setMainObject} defaultOb={defaultOb} />
+      <Settings mainObject={mainObject} backend={backend} setMainObject={setMainObject} defaultOb={defaultOb}/>
     </div>
   );
 }
