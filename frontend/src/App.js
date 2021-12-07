@@ -22,13 +22,29 @@ function App() {
       console.log(error);
     });
   }
+  let locationList = [];
+  for (let i = 0; i < mainObject[0].length; i++) {
+    locationList.push(mainObject[0][i]);
+  }
+  let unitList = [];
+  for (let i = 0; i < mainObject[1].length; i++) {
+    //ADD THE LOCATION NAME TO THE OBJECT
 
+    unitList.push(mainObject[1][i]);
+  }
+  let roomList = [];
+  for (let i = 0; i < mainObject[2].length; i++) {
+    //ADD THE UNIT NAME TO THE OBJECT
+    //console.log(mainObject[2][i].roomName);
+    roomList.push(mainObject[2][i]);
+  }
   return (
     <div className="App">
       <header className="App-header">
         <span id="headerLeft"><h1>Heaters Control</h1></span><span id="headerRigt"> </span>
       </header>
-      <Settings mainObject={mainObject} backend={backend} setMainObject={setMainObject} defaultOb={defaultOb}/>
+      <Settings mainObject={mainObject} backend={backend} setMainObject={setMainObject} defaultOb={defaultOb}
+        locationList={locationList} unitList={unitList} roomList={roomList} />
     </div>
   );
 }
