@@ -52,7 +52,8 @@ router.post('/location', async (req, res, next) => {
       locName: req.body.locName,
       description: null
     }).then((results) => {
-      res.send(`{ "results" : "Created" }`);
+      console.log(results);
+      res.send(`{ "results" : "Completed" }`);
     }).catch((error) => {
       res.send(`{ "results" : "${error}" }`);
     });
@@ -71,7 +72,8 @@ router.delete('/location', async (req, res, next) => {
         id: req.body.locationId
       }
     }).then((results) => {
-      send = `{ "results" : "Deleted" }`;
+      console.log(results);
+      send = `{ "results" : "Completed" }`;
     }).catch((error) => {
       send = `{ "results" : "${error}" }`;
     });
@@ -114,6 +116,7 @@ router.delete('/location', async (req, res, next) => {
   //////////
   res.send(send);
 });
+
 router.post('/units', async (req, res, next) => {
   let count = 0;
   await Units.count({ where: { unitName: req.body.unitName.toLowerCase() } }).then((res) => { count = res; });///findOrCreate????
@@ -125,8 +128,10 @@ router.post('/units', async (req, res, next) => {
       desiredTemp: 0,
       controlRoom: "unset"
     }).then((results) => {
-      res.send(`{ "results" : "Created" }`);
+      console.log(results);
+      res.send(`{ "results" : "Completed" }`);
     }).catch((error) => {
+      console.log(error);
       res.send(`{ "results" : "${error}" }`);
     });
   } else {
@@ -146,7 +151,7 @@ router.delete('/units', async (req, res, next) => {
       }
     }).then((results) => {
       console.log(results);
-      send = `{ "results" : "Deleted" }`;
+      send = `{ "results" : "Completed" }`;
     }).catch((error) => {
       console.log(`{ "results" : "${error}" }`);
     });
@@ -169,7 +174,6 @@ router.delete('/units', async (req, res, next) => {
   } else {
     console.log(`{"results" : "Rooms do not not exists."}`)
   }
-  //////////
   res.send(send);
 });
 router.post('/rooms', async (req, res, next) => {
@@ -181,12 +185,13 @@ router.post('/rooms', async (req, res, next) => {
       timePassedToSrv: req.body.timePassedToSrv,
       locationId: req.body.locationId,
       unitId: req.body.unitId,
-      currentTemp: 90,
+      currentTemp: req.body.currentTemp,
     }).then((results) => {
-      res.send(`{ "results" : "Create" }`);
+      console.log(results);
+      res.send(`{ "results" : "Completed" }`);
     }).catch((error) => {
-      res.send(`{ "results" : "${error}" }`);
       console.log(error);
+      res.send(`{ "results" : "${error}" }`);
     });
   } else {
     console.log(`${req.body.roomName.toLowerCase()} already exists.`)
@@ -206,14 +211,13 @@ router.delete('/rooms', async (req, res, next) => {
       }
     }).then((results) => {
       console.log(results);
-      send = `{ "results" : "Deleted" }`;
+      send = `{ "results" : "Completed" }`;
     }).catch((error) => {
       send = `{ "results" : "${error}" }`;
     });
   } else {
     send = `{"results" : "Rooms do not not exists."}`;
   }
-  //////////
   res.send(send);
 });
 
@@ -254,9 +258,9 @@ router.put('/unitinstructions', async (req, res, next) => {
     }
     let sendBack;
     if (roomLocation === unitLocation && roomTemp < desiredTemp) {
-      sendBack = `{"results" : "1" }`;
+      sendBack = `{"results" : 1 }`;
     } else if (roomLocation === unitLocation && roomTemp >= desiredTemp) {
-      sendBack = `{"results" : "0" }`;
+      sendBack = `{"results" : 0 }`;
     } else if (roomLocation !== unitLocation) {
       sendBack = `{"results" : "Error, Locations do not match." }`;
     } else {

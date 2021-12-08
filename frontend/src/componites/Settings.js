@@ -1,10 +1,9 @@
 
-const Settings = ({ mainObject, backend, setMainObject, defaultOb, locationList, unitList, roomList }) => {
+const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, roomList }) => {
     /***
      * NOTES!
      * Put the fetches in one function, use async await, put the .thens in a value.//
      *SHOW UNIT THAT ROOM IS ASSIGNED TO AND LOCATION UNIT IS ASIGNED TO
-     *Parse documents.getelementbyid to int where it is Int in the database.//
      * let fetchfunc;
      * const fetchfunc = (array) => {
      * const fetchthen = fetch();
@@ -12,99 +11,56 @@ const Settings = ({ mainObject, backend, setMainObject, defaultOb, locationList,
      * }
      * 
      * function async (){
-     * array['method', 'url', 'body'];
+     * 
      * await fetchfunc(array);
      * 
      * }
      */
-    const newLocation = (e) => {
-        e.preventDefault();
-        const body = `{ "locName" : "${document.getElementById('locationName').value}", "timePassedToSrv" : "${Date()}" }`;
-        fetch(`${backend}/location`, {
-            method: 'POST',
+    const fetchFunction = async (infoArray) => {
+        //array['method', 'url', 'body'];
+        await fetch(`${backend}${infoArray[1]}`, {
+            method: `${infoArray[0]}`,
             mode: 'cors',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: body,
+            body: `${infoArray[2]}`,
         }).then((res) => {
             return res.json();
         }).then((res) => {
-            if (res.results !== "Created") {
-                console.log("Error");
-            };
-            document.getElementById('locationName').value = '';
+            if (res.results === "Completed") {
+                alert("Task was completed");
+            } else {
+                alert(`Error: ${res.error}`);
+            }
             setMainObject(defaultOb);
         }).catch((error) => {
-            console.log(error);
+            alert(`Error: ${error.results}`)
         });
+    }
+    const newLocation = (e) => {
+        e.preventDefault();
+        const body = `{ "locName" : "${document.getElementById('locationName').value}", "timePassedToSrv" : "${Date()}" }`;
+        fetchFunction(['POST', '/location', `${body}`]);
+        document.getElementById('locationName').value = '';
+
     }
     const delLocation = (e) => {
         e.preventDefault();
         const body = `{ "locationId" : ${parseInt(document.getElementById('delLocationSelect').value)}, "timePassedToSrv" : "${Date()}" }`;
-        fetch(`${backend}/location`, {
-            method: 'DELETE',
-            mode: 'cors',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: body,
-        }).then((res) => {
-            return res.json();
-        }).then((res) => {
-            if (res.results !== "Deleted") {
-                console.log("Error" + res.results);
-            };
-            setMainObject(defaultOb);
-        }).catch((error) => {
-            console.log(error);
-        });
+        fetchFunction(['DELETE', '/location', `${body}`]);
     }
     const newunit = (e) => {
         e.preventDefault();
         const body = `{ "unitName" : "${document.getElementById('unitName').value}", "locationId" : ${parseInt(document.getElementById('locationSelected').value)}, "timePassedToSrv" : "${Date()}" }`;
-        fetch(`${backend}/units`, {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: body,
-        }).then((res) => {
-            return res.json();
-        }).then((res) => {
-            console.log(res.results);
-            document.getElementById('unitName').value = "";
-        }).catch((error) => {
-            console.log(error);
-        });
-        setMainObject(defaultOb);
+        fetchFunction(['POST', '/units', `${body}`]);
+        document.getElementById('unitName').value = '';
     }
     const delUnit = (e) => {
         e.preventDefault();
         const body = `{ "id" : ${parseInt(document.getElementById('delUnitId').value)}, "timePassedToSrv" : "${Date()}" }`;
-        fetch(`${backend}/units`, {
-            method: 'DELETE',
-            mode: 'cors',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: body,
-        }).then((res) => {
-            return res.json();
-        }).then((res) => {
-            if (res.results !== "Deleted") {
-                console.log("Error");
-            };
-            setMainObject(defaultOb);
-        }).catch((error) => {
-            console.log(error);
-        });
-
+        fetchFunction(['DELETE', '/units', `${body}`]);
     }
 
     const newroom = async (e) => {
@@ -116,47 +72,15 @@ const Settings = ({ mainObject, backend, setMainObject, defaultOb, locationList,
             }
             return unit.id;
         });
-        const body = `{ "roomName" : "${document.getElementById('roomName').value}", "currentTemp" : "100", "timePassedToSrv" : "${Date()}",
+        const body = `{ "roomName" : "${document.getElementById('roomName').value}", "currentTemp" : 100, "timePassedToSrv" : "${Date()}",
          "locationId" : ${locationId}, "unitId" : ${parseInt(document.getElementById('unitSelectedCreateRoom').value)} }`;
-        await fetch(`${backend}/rooms`, {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: body,
-        }).then((res) => {
-            return res.json();
-        }).then((res) => {
-            console.log(res.results);
-            document.getElementById('roomName').value = '';
-            setMainObject(defaultOb);
-        }).catch((error) => {
-            console.log(error);
-        });
+        document.getElementById('roomName').value = '';
+        fetchFunction(['POST', '/rooms', `${body}`]);
     }
     const delRoom = (e) => {
         e.preventDefault();
         const body = `{ "id" : ${parseInt(document.getElementById('delRoomId').value)}, "timePassedToSrv" : "${Date()}" }`;
-        fetch(`${backend}/rooms`, {
-            method: 'DELETE',
-            mode: 'cors',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: body,
-        }).then((res) => {
-            return res.json();
-        }).then((res) => {
-            if (res.results !== "Deleted") {
-                console.log("Error" + res.results);
-            };
-            setMainObject(defaultOb);
-        }).catch((error) => {
-            console.log(error);
-        });
+        fetchFunction(['DELETE', '/rooms', `${body}`]);
     }
 
     return (
@@ -204,7 +128,14 @@ const Settings = ({ mainObject, backend, setMainObject, defaultOb, locationList,
                             <input type='submit' />
                         </> : "A location needs to be created before you can add a unit."}
                 </form>
-
+                <label>Unit List</label>
+                <ul>
+                    {
+                        unitList.map((unit, index) => (
+                            <li key={index}>{unit.unitName} at {unit.locationName}</li>
+                        ))
+                    }
+                </ul>
                 <form onSubmit={delUnit}>
                     <label>Delete Unit</label>
                     {unitList.length > 0 ?
@@ -237,7 +168,13 @@ const Settings = ({ mainObject, backend, setMainObject, defaultOb, locationList,
                         <input type='text' id="roomName" />
                         <input type='submit' /></> : "A Unit needs to be created before you can add rooms."}
                 </form>
-
+                <ul>
+                    {
+                        roomList.map((room, index) => (
+                            <li key={index}>{room.roomName} assigned to {room.unitName} at {room.locationName}</li>
+                        ))
+                    }
+                </ul>
 
                 <form onSubmit={delRoom}>
                     <label>Delete Room</label>
