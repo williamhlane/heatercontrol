@@ -1,21 +1,5 @@
 
 const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, roomList }) => {
-    /***
-     * NOTES!
-     * Put the fetches in one function, use async await, put the .thens in a value.//
-     *SHOW UNIT THAT ROOM IS ASSIGNED TO AND LOCATION UNIT IS ASIGNED TO
-     * let fetchfunc;
-     * const fetchfunc = (array) => {
-     * const fetchthen = fetch();
-     * 
-     * }
-     * 
-     * function async (){
-     * 
-     * await fetchfunc(array);
-     * 
-     * }
-     */
     const fetchFunction = async (infoArray) => {
         //array['method', 'url', 'body'];
         await fetch(`${backend}${infoArray[1]}`, {
@@ -82,7 +66,6 @@ const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, r
         const body = `{ "id" : ${parseInt(document.getElementById('delRoomId').value)}, "timePassedToSrv" : "${Date()}" }`;
         fetchFunction(['DELETE', '/rooms', `${body}`]);
     }
-
     return (
         <div id="settings">
 

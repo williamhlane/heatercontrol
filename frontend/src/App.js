@@ -1,15 +1,14 @@
 import './App.css';
 import Settings from './componites/Settings';
+import Main from './componites/Main';
 import { useState } from "react";
-/*
-TO DO FIX WARNINGS
- Line 34:22:  Function declared in a loop contains unsafe references to variable(s) 'locationName'              no-loop-func
-  Line 53:18:  Function declared in a loop contains unsafe references to variable(s) 'locationName', 'unitName'  no-loop-func
-*/
+
 function App() {
   const backend = "http://192.168.0.180:3001";
   const defaultOb = '[[{"id":0,"locName":"Loading","description": null }][][]]';
+  let loggedin = true;
   const [mainObject, setMainObject] = useState(defaultOb);
+  const [showWhatComp, setShowWhatComp] = useState("main");
   if (mainObject === defaultOb) {
     fetch(`${backend}/mainobject`, {
       method: 'GET',
@@ -32,9 +31,8 @@ function App() {
   }
   let unitList = [];
   let push;
-  let locationName;
-  let unitName;
   for (let i = 0; i < mainObject[1].length; i++) {
+    let locationName;
     locationList.map((location, index) => {
       if (parseInt(location.id) === parseInt(mainObject[1][i].locationId)) {
         locationName = location.locName;
@@ -51,9 +49,10 @@ function App() {
     };
     unitList.push(push);
   }
-
   let roomList = [];
   for (let i = 0; i < mainObject[2].length; i++) {
+    let locationName;
+    let unitName;
     unitList.map((unit, index) => {
       if (parseInt(unit.id) === parseInt(mainObject[2][i].unitId)) {
         locationName = unit.locationName;
@@ -68,18 +67,35 @@ function App() {
       "unitId": mainObject[2][i].unitId,
       "currentTemp": mainObject[2][i].currentTemp,
       "updatedAt": `${mainObject[2][i].updatedAt}`,
-      "unitName" : `${unitName}`,
-      "locationName" : `${locationName}`
+      "unitName": `${unitName}`,
+      "locationName": `${locationName}`
     }
     roomList.push(push);
   }
+
   return (
     <div className="App">
       <header className="App-header">
         <span id="headerLeft"><h1>Heaters Control</h1></span><span id="headerRigt"> </span>
       </header>
-      <Settings mainObject={mainObject} backend={backend} setMainObject={setMainObject} defaultOb={defaultOb}
-        locationList={locationList} unitList={unitList} roomList={roomList} />
+      {loggedin === true ? <>
+        <div>
+          {showWhatComp === "settings" ?
+            <button onClick={() => setShowWhatComp("main")}>Main</button>
+            :
+            <button onClick={() => setShowWhatComp("settings")}>Settings</button>
+          }</div>
+        {showWhatComp === "settings" ?
+          <Settings backend={backend} setMainObject={setMainObject} defaultOb={defaultOb}
+            locationList={locationList} unitList={unitList} roomList={roomList} />
+          :
+          <Main setMainObject={setMainObject} defaultOb={defaultOb} backend={backend} locationList={locationList} unitList={unitList} roomList={roomList} />
+        }
+      </>
+        :
+        <div>
+          <p>Please log into the appication.</p>
+        </div>}
     </div>
   );
 }

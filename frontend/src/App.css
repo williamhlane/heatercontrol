@@ -36,3 +36,18 @@
     transform: rotate(360deg);
   }
 }
+ul {
+  list-style-type: none;
+}
+button {
+  border-style: none;
+  padding: 10px;
+  background-color: black;
+  border-radius: 5px;
+  font-size: 20px;
+  color: white;
+  text-shadow: darkblue 1px 1px;
+  }
+  button:hover {
+    background-color: rgb(112, 6, 6);
+  }
