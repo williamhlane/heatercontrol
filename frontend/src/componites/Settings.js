@@ -1,5 +1,6 @@
 
 const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, roomList }) => {
+    /*IF YOU TRY TO ADD A ROOM WITH A NAME THAT EXISTS THE ERROR COMES BACK UNDEFINED */
     const fetchFunction = async (infoArray) => {
         //array['method', 'url', 'body'];
         await fetch(`${backend}${infoArray[1]}`, {

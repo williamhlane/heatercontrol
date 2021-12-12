@@ -1,10 +1,16 @@
+import Units from "./Units";
 const Main = ({ backend, setMainObject, defaultOb, locationList, unitList, roomList }) => {
     ///PROBLEM IN CODE ROOM INFORMATION IS ALWAYS THE SAME.
-    let mainArray = [];
+    /*
+    TODO change mainArray to roomArray and make a unitArray that will render the components 
+    */
+    let unitArray = [];
+    let roomArray = [];
     for (let i = 0; i < locationList.length; i++) {
-        unitList.map((unit, index) => {
-            if (unit.locationName === locationList[i].locName) {
-                roomList.map((room, index) => {
+        unitList.map((unit) => {
+            if (unit.locationId === locationList[i].id) {
+                unitArray.push(unit);
+                roomList.map((room) => {
                     if (room.unitId === unit.id) {
                         let push = {
                             locationId: locationList[i].id,
@@ -18,7 +24,7 @@ const Main = ({ backend, setMainObject, defaultOb, locationList, unitList, roomL
                             currentTemp: room.currentTemp,
                             updatedAt: `${room.updatedAt}`
                         }
-                        mainArray.push(push)
+                        roomArray.push(push)
                     }
                     return 1;
                 })
@@ -26,24 +32,20 @@ const Main = ({ backend, setMainObject, defaultOb, locationList, unitList, roomL
             return 1;
         });
     }
-    console.log(mainArray);
+    console.log(unitArray);
+    // console.log(roomArray);
 
     return (
-        <div id="main">
-            {/*
-                unitList.map((unit, index) => (
-                    <div>
-                        <header>Unit Name: {unit.unitName} Controlroom: {unit.controlRoom} Desired Temperature: {unit.desiredTemp}</header>
-                        <div>
-                            Controls go here.
-                        </div>
-                    </div>
+        <div id="mainDiv">
+            {
+                unitArray.map((unit, index) => (
+                    <Units key={index} unit={unit} roomList={roomList} />
                 ))
 
 
 
 
-                */  }
+            }
         </div>
     )
 }
