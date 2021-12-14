@@ -119,14 +119,15 @@ router.delete('/location', async (req, res, next) => {
 
 router.post('/units', async (req, res, next) => {
   let count = 0;
-  await Units.count({ where: { unitName: req.body.unitName.toLowerCase() } }).then((res) => { count = res; });///findOrCreate????
+  await Units.count({ where: { unitName: req.body.unitName.toUpperCase(), locationId: req.body.locationId } }).then((res) => { count = res; });///findOrCreate????
   if (count === 0) {
     await Units.create({
-      unitName: req.body.unitName.toLowerCase(),
+      unitName: req.body.unitName.toUpperCase(),
       timePassedToSrv: req.body.timePassedToSrv,
       locationId: req.body.locationId,
       desiredTemp: 0,
-      controlRoom: "unset"
+      controlRoom: "unset",//////////////////////////////////////////////////////////////////////////////////////////////////////CONTROLROOM
+      controlRoomId: null
     }).then((results) => {
       console.log(results);
       res.send(`{ "results" : "Completed" }`);
@@ -138,8 +139,8 @@ router.post('/units', async (req, res, next) => {
     res.send(`{ "results" : "That unit name is taken."}`);
   }
 });
-router.delete('/units', async (req, res, next) => {
 
+router.delete('/units', async (req, res, next) => {
   let send;
   ////THE DELETE UNITS WILL GO HERE
   let unitCount;
@@ -158,43 +159,27 @@ router.delete('/units', async (req, res, next) => {
   } else {
     console.log(`{"results" : "Unit does not exists."}`)
   }
-  //THE DELETE ROOMS WILL GO HERE
-  let roomsCount;
-  await Rooms.count({ where: { unitId: req.body.id } }).then((count) => { roomsCount = count });
-  if (roomsCount > 0) {
-    await Rooms.destroy({
-      where: {
-        unitId: req.body.id
-      }
-    }).then((results) => {
-      console.log(results);
-    }).catch((error) => {
-      console.log(`{ "results" : "${error}" }`);
-    });
-  } else {
-    console.log(`{"results" : "Rooms do not not exists."}`)
-  }
   res.send(send);
 });
+
 router.post('/rooms', async (req, res, next) => {
   let count = 0;
-  await Rooms.count({ where: { roomName: req.body.roomName.toLowerCase() } }).then((res) => { count = res; });
+  await Rooms.count({ where: { roomName : req.body.roomName.toUpperCase(), locationId: req.body.locationId } }).then((res) => { count = res; });
   if (count === 0) {
     await Rooms.create({
-      roomName: req.body.roomName.toLowerCase(),
+      roomName: req.body.roomName.toUpperCase(),
       timePassedToSrv: req.body.timePassedToSrv,
       locationId: req.body.locationId,
-      unitId: req.body.unitId,
       currentTemp: req.body.currentTemp,
     }).then((results) => {
       console.log(results);
       res.send(`{ "results" : "Completed" }`);
     }).catch((error) => {
       console.log(error);
-      res.send(`{ "results" : "${error}" }`);
+      res.send(`{ "results" : "Error: ${error}" }`);
     });
   } else {
-    console.log(`${req.body.roomName.toLowerCase()} already exists.`)
+    console.log(`${req.body.roomName.toUpperCase()} already exists.`)
     res.send(`{ "results" : "That room already exists." }`);
 
   }
@@ -226,7 +211,8 @@ router.put('/unitinstructions', async (req, res, next) => {
   if (req.body.token === "9999999999") {
     //send back pinNunmber
     //onoff
-    let controlRoom;
+    let controlRoom;////////////////////////////////////////////////////////////////////////////CONTROL ROOM
+    let controlRoomId;
     let desiredTemp;
     let unitLocation;
     let roomLocation;
@@ -237,7 +223,8 @@ router.put('/unitinstructions', async (req, res, next) => {
         id: req.body.id,
       }
     }).then((results) => {
-      controlRoom = results.controlRoom;
+      controlRoom = results.controlRoom;////////////////////////////////////////////////////////////?CONTROL ROOM
+      controlRoomId = results.controlRoomId;
       desiredTemp = results.desiredTemp;
       unitLocation = results.location;
     }).catch((error) => {
@@ -247,7 +234,7 @@ router.put('/unitinstructions', async (req, res, next) => {
       await Rooms.findOne({
         where:
         {
-          id: controlRoom
+          id: controlRoomId
         }
       }).then((results) => {
         roomLocation = results.location;

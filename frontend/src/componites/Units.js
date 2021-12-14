@@ -1,17 +1,14 @@
-const Units = ({ unit, roomList }) => {
-/*unit {id, unitName, locationId, desiredTemp, controlRoom, locationName}*/
-    const setControlRoom = (roomId) => {
-        console.log(unit.id + roomId);
+const Units = ({ unit, roomList, setMainObject, defaultOb }) => {
+    const fetchFunction = (roomId, unitId, dowhat) => {
+        //(roomId, unit.id , dowhat)//
+        ////NEED TO CREATE THE ROUTES use unitinstructions post ON THE BACK END AND DO THE FETCH//USE SWITCH
+        setMainObject(defaultOb);
     }
-    const changeTemp = (inputTemp) => {
-        console.log(unit.id + inputTemp);
-    }
-
     /**************************************************************************** */
     const TempSwipe = () => {
-        let swipeNum = [];
-        for(let temp = 32; temp < 90; temp++){
-            swipeNum.push(<span key={temp} className="swipeNum" onClick={(e) => changeTemp(e.target.value)}> {temp} </span>)
+        let swipeNum = [<span key='0' className="swipeNum" onClick={() => fetchFunction(parseInt(0), unit.id, "changeTemp")}> OFF </span>];
+        for(let temp = 40; temp < 90; temp++){//In the furture put css directly and slowly change from blue to red as the numbers get higher.
+            swipeNum.push(<span key={temp} className="swipeNum" onClick={() => fetchFunction(parseInt(temp), unit.id, "changeTemp")}> {temp} </span>)
         }
         return (
             <div className="tempSwipe">
@@ -24,13 +21,15 @@ const Units = ({ unit, roomList }) => {
         <div className="unitsDiv">
             <h2>{unit.unitName}</h2> <h3>Location: {unit.locationName}</h3>
             <label>Select Control Room:</label>
-            <select onChange={(e) => setControlRoom(e.target.value)}>
+            <select onChange={(e) => fetchFunction(e.target.value, unit.id, "setControlRoom")}>
+                <option key={10000}>{unit.controlRoom}</option>{/*NO VALUE?*/}
             {
                 roomList.map((room, index) => (
-                   room.unitId === unit.id ? <option key={index}>{room.roomName}</option> : null 
+                   room.locationId === unit.locationId ? <option key={index} value={room.id}>{room.roomName}</option> : null 
                 ))
             }
             </select>
+            {unit.desiredTemp !== 0 ? <label>Desired Temperature: {unit.desiredTemp} </label> : <label>Heater is off.</label> }
             {<TempSwipe />}
         </div>
     )

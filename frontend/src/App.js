@@ -33,18 +33,20 @@ function App() {
   let push;
   for (let i = 0; i < mainObject[1].length; i++) {
     let locationName;
-    locationList.map((location, index) => {
+    locationList.map((location) => {
       if (parseInt(location.id) === parseInt(mainObject[1][i].locationId)) {
         locationName = location.locName;
       }
       return location.locName;
     });
+
     push = {
       "id": mainObject[1][i].id,
       "unitName": `${mainObject[1][i].unitName}`,
       "locationId": parseInt(mainObject[1][i].locationId),
       "desiredTemp": parseInt(mainObject[1][i].desiredTemp),
-      "controlRoom": `${mainObject[1][i].controlRoom}`,
+      "controlRoom": `${mainObject[1][i].controlRoom}`,/////////////////////////////////////////////CONTROL ROOM
+      "controlRoomId" : parseInt(mainObject[1][i].controlRoomId),
       "locationName": `${locationName}`
     };
     unitList.push(push);
@@ -52,13 +54,11 @@ function App() {
   let roomList = [];
   for (let i = 0; i < mainObject[2].length; i++) {
     let locationName;
-    let unitName;
-    unitList.map((unit, index) => {
-      if (parseInt(unit.id) === parseInt(mainObject[2][i].unitId)) {
-        locationName = unit.locationName;
-        unitName = unit.unitName;
+      locationList.map((location) => {
+      if (parseInt(location.id) === parseInt(mainObject[2][i].locationId)) {
+        locationName = location.locName;
       }
-      return unit.locName;
+      return location.locName;
     });
     push = {
       "id": mainObject[2][i].id,
@@ -67,7 +67,6 @@ function App() {
       "unitId": mainObject[2][i].unitId,
       "currentTemp": mainObject[2][i].currentTemp,
       "updatedAt": `${mainObject[2][i].updatedAt}`,
-      "unitName": `${unitName}`,
       "locationName": `${locationName}`
     }
     roomList.push(push);

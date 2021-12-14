@@ -1,6 +1,5 @@
 
 const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, roomList }) => {
-    /*IF YOU TRY TO ADD A ROOM WITH A NAME THAT EXISTS THE ERROR COMES BACK UNDEFINED */
     const fetchFunction = async (infoArray) => {
         //array['method', 'url', 'body'];
         await fetch(`${backend}${infoArray[1]}`, {
@@ -17,7 +16,7 @@ const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, r
             if (res.results === "Completed") {
                 alert("Task was completed");
             } else {
-                alert(`Error: ${res.error}`);
+                alert(`${res.results}`);
             }
             setMainObject(defaultOb);
         }).catch((error) => {
@@ -50,15 +49,8 @@ const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, r
 
     const newroom = async (e) => {
         e.preventDefault();
-        let locationId;
-        unitList.map((unit, index) => {
-            if (unit.id === parseInt(document.getElementById('unitSelectedCreateRoom').value)) {
-                locationId = parseInt(unit.locationId);
-            }
-            return unit.id;
-        });
         const body = `{ "roomName" : "${document.getElementById('roomName').value}", "currentTemp" : 100, "timePassedToSrv" : "${Date()}",
-         "locationId" : ${locationId}, "unitId" : ${parseInt(document.getElementById('unitSelectedCreateRoom').value)} }`;
+         "locationId" : ${parseInt(document.getElementById('locationSelectedCreateRoom').value)}  }`;
         document.getElementById('roomName').value = '';
         fetchFunction(['POST', '/rooms', `${body}`]);
     }
@@ -67,6 +59,7 @@ const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, r
         const body = `{ "id" : ${parseInt(document.getElementById('delRoomId').value)}, "timePassedToSrv" : "${Date()}" }`;
         fetchFunction(['DELETE', '/rooms', `${body}`]);
     }
+    console.log(unitList);
     return (
         <div id="settings">
 
@@ -116,7 +109,7 @@ const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, r
                 <ul>
                     {
                         unitList.map((unit, index) => (
-                            <li key={index}>{unit.unitName} at {unit.locationName}</li>
+                            <li key={index}>{unit.unitName} at {unit.locationName} ID: {unit.id}</li>
                         ))
                     }
                 </ul>
@@ -127,7 +120,7 @@ const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, r
                             <select id="delUnitId">
                                 {
                                     unitList.map((unit, index) => (
-                                        <option key={index} value={unit.id}>{unit.unitName}</option>
+                                        <option key={index} value={unit.id}>{unit.unitName} at {unit.locationName}</option>
                                     ))
                                 }
                             </select>
@@ -140,11 +133,11 @@ const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, r
                 <h3>Rooms</h3>
                 <form onSubmit={newroom}>
                     <label>Create Room</label>
-                    {unitList.length > 0 ? <>Add room to Unit:
-                        <select id="unitSelectedCreateRoom">
+                    {unitList.length > 0 ? <>Add room to Location:
+                        <select id="locationSelectedCreateRoom">
                             {
-                                unitList.map((unit, index) => (
-                                    <option key={index} value={unit.id}>{unit.unitName}</option>
+                                locationList.map((location, index) => (
+                                    <option key={index} value={location.id}>{location.locName}</option>
                                 ))
                             }
                         </select>
@@ -167,7 +160,7 @@ const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, r
                             <select id="delRoomId">
                                 {
                                     roomList.map((room, index) => (
-                                        <option key={index} value={room.id}>{room.roomName}</option>
+                                        <option key={index} value={room.id}>{room.roomName} at {room.locationName}</option>
                                     ))
                                 }
                             </select>

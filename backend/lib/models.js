@@ -31,6 +31,10 @@ const Units = db.define('Units', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    controlRoomId: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
     controlRoom: {
         type: DataTypes.STRING,
         allowNull: false
@@ -48,10 +52,6 @@ const Rooms = db.define('Rooms', {
         allowNull: false
     },
     locationId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    unitId: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
