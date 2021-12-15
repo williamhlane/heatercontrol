@@ -17,7 +17,7 @@ const Main = ({ backend, setMainObject, defaultOb, locationList, unitList, roomL
         <div id="mainDiv">
             {
                 unitArray.map((unit, index) => (
-                    <Units key={index} unit={unit} roomList={roomList} setMainObject={setMainObject} defaultOb={defaultOb} />
+                    <Units key={index} unit={unit} roomList={roomList} setMainObject={setMainObject} defaultOb={defaultOb} backend={backend}/>
                 ))
             }
         </div>

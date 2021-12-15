@@ -46,10 +46,10 @@ router.get('/mainobject', async (req, res, next) => {
 });
 router.post('/location', async (req, res, next) => {
   let locCount;
-  await Locations.count({ where: { locName: req.body.locName } }).then((count) => { locCount = count });///findOrCreate?????
+  await Locations.count({ where: { locName: req.body.locName.toUpperCase() } }).then((count) => { locCount = count });///findOrCreate?????
   if (locCount === 0) {
     await Locations.create({
-      locName: req.body.locName,
+      locName: req.body.locName.toUpperCase(),
       description: null
     }).then((results) => {
       console.log(results);
@@ -207,6 +207,34 @@ router.delete('/rooms', async (req, res, next) => {
 });
 
 ////\/CONTROL AND TEMP UNITS\//////////////////////////////////////////////////
+router.post('/unitinstructions', async (req, res, next) => {
+  const dbUpdate = (ob) => {
+    Units.update(ob,
+    {
+      where: {
+        id: parseInt(req.body.unitId)
+      }
+    }).then((results) =>{
+      console.log(results);
+      res.send(`{ "results" : "Completed" }`);
+    }).catch((error) => {
+      console.log(error);
+      res.send(`{ "results" : "Error ${error}" }`);
+    })
+  }
+  switch(req.body.doWhat){
+    case "changeTemp":
+      dbUpdate({ "desiredTemp": parseInt(req.body.roomIdorTemp)});
+      
+    break;
+    case "setControlRoom":
+      dbUpdate({ "controlRoomId": parseInt(req.body.roomIdorTemp)});
+    break;
+    default:
+      res.send(`{ "results" : "Error" }`);
+  }
+  
+});
 router.put('/unitinstructions', async (req, res, next) => {
   if (req.body.token === "9999999999") {
     //send back pinNunmber

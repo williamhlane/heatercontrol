@@ -1,9 +1,27 @@
-const Units = ({ unit, roomList, setMainObject, defaultOb }) => {
-    const fetchFunction = (roomId, unitId, dowhat) => {
-        //(roomId, unit.id , dowhat)//
+const Units = ({ unit, roomList, setMainObject, defaultOb, backend }) => {
+    const fetchFunction = (roomIdorTemp, unitId, doWhat) => {
+        //(roomIdorTemp, unit.id , dowhat)//
         ////NEED TO CREATE THE ROUTES use unitinstructions post ON THE BACK END AND DO THE FETCH//USE SWITCH
-        setMainObject(defaultOb);
+        fetch(`${backend}/unitinstructions`, {
+            method: `POST`,
+            mode: 'cors',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: `{ "roomIdorTemp" : ${roomIdorTemp}, "unitId" : ${parseInt(unitId)}, "doWhat" : "${doWhat}" }`,
+        }).then((res) => {
+            return res.json();
+        }).then((res) => {
+            if (res.results !== "Completed") {
+                alert(`${res.results}`);
+            }
+            setMainObject(defaultOb);
+        }).catch((error) => {
+            alert(`Error: ${error.results}`)
+        });
     }
+    
     /**************************************************************************** */
     const TempSwipe = () => {
         let swipeNum = [<span key='0' className="swipeNum" onClick={() => fetchFunction(parseInt(0), unit.id, "changeTemp")}> OFF </span>];

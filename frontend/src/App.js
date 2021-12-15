@@ -2,7 +2,9 @@ import './App.css';
 import Settings from './componites/Settings';
 import Main from './componites/Main';
 import { useState } from "react";
-
+/*
+NEED TO ADD AUTO GENERATED TOKENS FOR THE UNITS AND A ALERT WHAT THOSE TOKENS ARE WHEN IT IS CREATED 
+*/
 function App() {
   const backend = "http://192.168.0.180:3001";
   const defaultOb = '[[{"id":0,"locName":"Loading","description": null }][][]]';
@@ -39,13 +41,19 @@ function App() {
       }
       return location.locName;
     });
+    let controlRoomName;
+    for (let ii = 0; ii < mainObject[2].length; ii++) {
+      if(parseInt(mainObject[2][ii].id) === parseInt(mainObject[1][i].controlRoomId)) {
+        controlRoomName = mainObject[2][ii].roomName;
+      }
+    }
 
     push = {
       "id": mainObject[1][i].id,
       "unitName": `${mainObject[1][i].unitName}`,
       "locationId": parseInt(mainObject[1][i].locationId),
       "desiredTemp": parseInt(mainObject[1][i].desiredTemp),
-      "controlRoom": `${mainObject[1][i].controlRoom}`,/////////////////////////////////////////////CONTROL ROOM
+      "controlRoom": `${controlRoomName}`,//REMOVE CONTROL ROOM NAME FROM DATABASE AND LOOK UP CONTROL ROOM ON LOAD BY ID//// 
       "controlRoomId" : parseInt(mainObject[1][i].controlRoomId),
       "locationName": `${locationName}`
     };
