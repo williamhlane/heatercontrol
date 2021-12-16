@@ -2,8 +2,8 @@
 import fetch from 'node-fetch';
 import { exec } from 'child_process';
 const url = 'http://192.168.0.180:3001';
-const myId = '1';
-const pinNuber = '4'; 
+const unitId = 1;
+const pinNumber = '4';
 "use strict";
 ////WRITE TO LOG
 const writeToLog = (what) => {
@@ -18,8 +18,14 @@ const writeToLog = (what) => {
 	});
 	process.exit();
 }
-const onoff = (onoff,pinNumber) => {
-	exec(`pinset ${onoff} ${pinNumber}`, (error, stdout, stderr) => {
+const onoff = (onoff) => {
+	let onoff2;
+	if(parseInt(onoff) === 1){
+		onoff2 = "on";
+	} else {
+		onoff2 = "off";
+	}
+	exec(`pinset ${onoff2} ${pinNumber}`, (error, stdout, stderr) => {
 		if (error) {
 			writeToLog(error);
 		} else if (stdout) {
@@ -30,7 +36,7 @@ const onoff = (onoff,pinNumber) => {
 	});
 }
 const fetchInstructions = () => {
-	const body = `{ "unitId" : "${myId}", "token" : "999999999", "timePassedToSrv" : "${Date()}" }`;
+	const body = `{ "unitId" : ${parseInt(unitId)}, "token" : "999999999", "timePassedToSrv" : "${Date()}" }`;
 	fetch(`${url}/unitinstructions`, {
 		method: 'PUT',
 		mode: 'cors',
@@ -42,7 +48,7 @@ const fetchInstructions = () => {
 	}).then((res) => {
 		res.json()
 	}).then((res) => {
-		onoff(`${res.onoff}`, `${pinNuber}`);
+		onoff(`${res.onoff}`);///Check GPIO pin number
 	}).catch((error) => {
 		writeToLog(`${error}`);
 	})

@@ -4,6 +4,7 @@ import Main from './componites/Main';
 import { useState } from "react";
 /*
 NEED TO ADD AUTO GENERATED TOKENS FOR THE UNITS AND A ALERT WHAT THOSE TOKENS ARE WHEN IT IS CREATED 
+WITH LOGIN
 */
 function App() {
   const backend = "http://192.168.0.180:3001";
@@ -43,18 +44,21 @@ function App() {
     });
     let controlRoomName;
     for (let ii = 0; ii < mainObject[2].length; ii++) {
-      if(parseInt(mainObject[2][ii].id) === parseInt(mainObject[1][i].controlRoomId)) {
+      if (parseInt(mainObject[2][ii].id) === parseInt(mainObject[1][i].controlRoomId)) {
         controlRoomName = mainObject[2][ii].roomName;
-      }
+      } 
     }
+    if(typeof(controlRoomName) === "undefined"){
+      controlRoomName = "UNSET";
+    } 
 
     push = {
       "id": mainObject[1][i].id,
       "unitName": `${mainObject[1][i].unitName}`,
       "locationId": parseInt(mainObject[1][i].locationId),
       "desiredTemp": parseInt(mainObject[1][i].desiredTemp),
-      "controlRoom": `${controlRoomName}`,//REMOVE CONTROL ROOM NAME FROM DATABASE AND LOOK UP CONTROL ROOM ON LOAD BY ID//// 
-      "controlRoomId" : parseInt(mainObject[1][i].controlRoomId),
+      "controlRoom": `${controlRoomName}`,
+      "controlRoomId": parseInt(mainObject[1][i].controlRoomId),
       "locationName": `${locationName}`
     };
     unitList.push(push);
@@ -62,7 +66,7 @@ function App() {
   let roomList = [];
   for (let i = 0; i < mainObject[2].length; i++) {
     let locationName;
-      locationList.map((location) => {
+    locationList.map((location) => {
       if (parseInt(location.id) === parseInt(mainObject[2][i].locationId)) {
         locationName = location.locName;
       }

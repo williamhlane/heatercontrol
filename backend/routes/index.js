@@ -126,7 +126,6 @@ router.post('/units', async (req, res, next) => {
       timePassedToSrv: req.body.timePassedToSrv,
       locationId: req.body.locationId,
       desiredTemp: 0,
-      controlRoom: "unset",//////////////////////////////////////////////////////////////////////////////////////////////////////CONTROLROOM
       controlRoomId: null
     }).then((results) => {
       console.log(results);
@@ -164,7 +163,7 @@ router.delete('/units', async (req, res, next) => {
 
 router.post('/rooms', async (req, res, next) => {
   let count = 0;
-  await Rooms.count({ where: { roomName : req.body.roomName.toUpperCase(), locationId: req.body.locationId } }).then((res) => { count = res; });
+  await Rooms.count({ where: { roomName: req.body.roomName.toUpperCase(), locationId: req.body.locationId } }).then((res) => { count = res; });
   if (count === 0) {
     await Rooms.create({
       roomName: req.body.roomName.toUpperCase(),
@@ -210,73 +209,69 @@ router.delete('/rooms', async (req, res, next) => {
 router.post('/unitinstructions', async (req, res, next) => {
   const dbUpdate = (ob) => {
     Units.update(ob,
-    {
-      where: {
-        id: parseInt(req.body.unitId)
-      }
-    }).then((results) =>{
-      console.log(results);
-      res.send(`{ "results" : "Completed" }`);
-    }).catch((error) => {
-      console.log(error);
-      res.send(`{ "results" : "Error ${error}" }`);
-    })
+      {
+        where: {
+          id: parseInt(req.body.unitId)
+        }
+      }).then((results) => {
+        console.log(results);
+        res.send(`{ "results" : "Completed" }`);
+      }).catch((error) => {
+        console.log(error);
+        res.send(`{ "results" : "Error ${error}" }`);
+      })
   }
-  switch(req.body.doWhat){
+  switch (req.body.doWhat) {
     case "changeTemp":
-      dbUpdate({ "desiredTemp": parseInt(req.body.roomIdorTemp)});
-      
-    break;
+      dbUpdate({ "desiredTemp": parseInt(req.body.roomIdorTemp) });
+
+      break;
     case "setControlRoom":
-      dbUpdate({ "controlRoomId": parseInt(req.body.roomIdorTemp)});
-    break;
+      dbUpdate({ "controlRoomId": parseInt(req.body.roomIdorTemp) });
+      break;
     default:
       res.send(`{ "results" : "Error" }`);
   }
-  
+
 });
 router.put('/unitinstructions', async (req, res, next) => {
   if (req.body.token === "9999999999") {
-    //send back pinNunmber
-    //onoff
-    let controlRoom;////////////////////////////////////////////////////////////////////////////CONTROL ROOM
     let controlRoomId;
     let desiredTemp;
-    let unitLocation;
-    let roomLocation;
-    let roomTemp;
+    let unitLocationId;
+    let roomLocationId;
+    let currentRoomTemp;
     await Units.findOne({
       where:
       {
         id: req.body.id,
       }
     }).then((results) => {
-      controlRoom = results.controlRoom;////////////////////////////////////////////////////////////?CONTROL ROOM
       controlRoomId = results.controlRoomId;
       desiredTemp = results.desiredTemp;
-      unitLocation = results.location;
+      unitLocationId = results.locationId;
     }).catch((error) => {
       res.send(`{ "results" : "${error}" }`);
     });
-    if (typeof (controlRoom) !== 'undefined') {
+    if (typeof (controlRoomId) !== 'undefined') {
       await Rooms.findOne({
         where:
         {
           id: controlRoomId
         }
       }).then((results) => {
-        roomLocation = results.location;
-        roomTemp = results.currentTemp;
+        roomLocationId = results.locationId;
+        currentRoomTemp = results.currentTemp;
       }).catch((error) => {
         res.send(`{ "results" : "${error}" }`);
       });
     }
     let sendBack;
-    if (roomLocation === unitLocation && roomTemp < desiredTemp) {
+    if (parseInt(roomLocationId) === parseInt(unitLocation) && parseInt(currentRoomTemp) < parseInt(desiredTemp)) {
       sendBack = `{"results" : 1 }`;
-    } else if (roomLocation === unitLocation && roomTemp >= desiredTemp) {
+    } else if (parseInt(roomLocationId) === parseInt(unitLocation)  && parseInt(roomTemp) >= parseInt(desiredTemp)) {
       sendBack = `{"results" : 0 }`;
-    } else if (roomLocation !== unitLocation) {
+    } else if (parseInt(roomLocationId) !== parseInt(unitLocation) ) {
       sendBack = `{"results" : "Error, Locations do not match." }`;
     } else {
       sendBack = `{"results" : "Error." }`;
@@ -288,7 +283,7 @@ router.put('/unitinstructions', async (req, res, next) => {
 });
 router.put('/updatetemp', async (req, res, next) => {
   if (req.body.token === "999999999") {
-    await Rooms.update({ currentTemp: `${parseInt(req.body.currentTemp)}`, timePassedToSrv: `${req.body.timePassedToSrv}` },
+    await Rooms.update({ currentTemp: parseInt(req.body.currentTemp), timePassedToSrv: `${req.body.timePassedToSrv}` },
       {
         where: {
           id: req.body.id,

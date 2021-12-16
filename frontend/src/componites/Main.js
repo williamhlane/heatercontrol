@@ -1,9 +1,5 @@
 import Units from "./Units";
 const Main = ({ backend, setMainObject, defaultOb, locationList, unitList, roomList }) => {
-    ///PROBLEM IN CODE ROOM INFORMATION IS ALWAYS THE SAME.
-    /*
-    TODO change mainArray to roomArray and make a unitArray that will render the components 
-    */
     let unitArray = [];
      for (let i = 0; i < locationList.length; i++) {
         unitList.map((unit) => {

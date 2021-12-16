@@ -2,7 +2,7 @@
 import fetch from 'node-fetch';
 import { exec } from 'child_process';
 const url = 'http://192.168.0.180:3001';
-const roomId = '7';
+const roomId = 1;
 "use strict";
 ////WRITE TO LOG
 const writeToLog = (what) => {
@@ -19,7 +19,7 @@ const writeToLog = (what) => {
 }
 //send with fetch
 const sendTemp = (temp) => {
-	const body = `{ "id" : "${roomId}", "currentTemp" : "${parseInt(temp)}", "token" : "999999999", "timePassedToSrv" : "${Date()}" }`;
+	const body = `{ "id" : ${parseInt(roomId)}, "currentTemp" : "${parseInt(temp)}", "token" : "999999999", "timePassedToSrv" : "${Date()}" }`;
 	fetch(`${url}/updatetemp`, {
 		method: 'PUT',
 		mode: 'cors',

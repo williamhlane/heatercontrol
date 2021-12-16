@@ -1,7 +1,5 @@
 const Units = ({ unit, roomList, setMainObject, defaultOb, backend }) => {
     const fetchFunction = (roomIdorTemp, unitId, doWhat) => {
-        //(roomIdorTemp, unit.id , dowhat)//
-        ////NEED TO CREATE THE ROUTES use unitinstructions post ON THE BACK END AND DO THE FETCH//USE SWITCH
         fetch(`${backend}/unitinstructions`, {
             method: `POST`,
             mode: 'cors',
@@ -34,6 +32,14 @@ const Units = ({ unit, roomList, setMainObject, defaultOb, backend }) => {
             </div>
         )
     }
+    let currentTemp;
+    roomList.map((room) => {
+        if(parseInt(room.id) === parseInt(unit.controlRoomId)){
+            currentTemp = room.currentTemp;
+        }
+        return 0;
+    });
+    
     /*************************************************************************** */
     return(
         <div className="unitsDiv">
@@ -47,7 +53,7 @@ const Units = ({ unit, roomList, setMainObject, defaultOb, backend }) => {
                 ))
             }
             </select>
-            {unit.desiredTemp !== 0 ? <label>Desired Temperature: {unit.desiredTemp} </label> : <label>Heater is off.</label> }
+            {unit.desiredTemp !== 0 ? <><label>Desired Temperature: {unit.desiredTemp} </label><label>Current Temp: {currentTemp}</label></> : <label>Heater is off.</label> }
             {<TempSwipe />}
         </div>
     )

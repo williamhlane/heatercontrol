@@ -34,10 +34,6 @@ const Units = db.define('Units', {
     controlRoomId: {
         type: DataTypes.INTEGER,
         allowNull: true
-    },
-    controlRoom: {
-        type: DataTypes.STRING,
-        allowNull: false
     }
 }, {
     /////////////////////////////////

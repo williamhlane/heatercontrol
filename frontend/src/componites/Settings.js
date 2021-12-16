@@ -109,7 +109,7 @@ const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, r
                 <ul>
                     {
                         unitList.map((unit, index) => (
-                            <li key={index}>{unit.unitName} at {unit.locationName} ID: {unit.id}</li>
+                            <li key={index}>ID: {unit.id} {unit.unitName} at {unit.locationName} </li>
                         ))
                     }
                 </ul>
@@ -148,7 +148,7 @@ const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, r
                 <ul>
                     {
                         roomList.map((room, index) => (
-                            <li key={index}>{room.roomName} assigned to {room.unitName} at {room.locationName}</li>
+                            <li key={index}>ID: {room.id} {room.roomName} assigned to {room.unitName} at {room.locationName}</li>
                         ))
                     }
                 </ul>
