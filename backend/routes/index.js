@@ -235,7 +235,8 @@ router.post('/unitinstructions', async (req, res, next) => {
 
 });
 router.put('/unitinstructions', async (req, res, next) => {
-  if (req.body.token === "9999999999") {
+  if (parseInt(req.body.token) === parseInt(999999999)) {
+    
     let controlRoomId;
     let desiredTemp;
     let unitLocationId;
@@ -244,14 +245,15 @@ router.put('/unitinstructions', async (req, res, next) => {
     await Units.findOne({
       where:
       {
-        id: req.body.id,
+        id: req.body.unitId,///CHANGED
       }
     }).then((results) => {
       controlRoomId = results.controlRoomId;
       desiredTemp = results.desiredTemp;
       unitLocationId = results.locationId;
+      console.log(results);
     }).catch((error) => {
-      res.send(`{ "results" : "${error}" }`);
+       sendBack = `{ "results" : "${error}" }`;
     });
     if (typeof (controlRoomId) !== 'undefined') {
       await Rooms.findOne({
@@ -263,21 +265,24 @@ router.put('/unitinstructions', async (req, res, next) => {
         roomLocationId = results.locationId;
         currentRoomTemp = results.currentTemp;
       }).catch((error) => {
-        res.send(`{ "results" : "${error}" }`);
+        sendBack = `{ "results" : "${error}" }`;
       });
     }
-    let sendBack;
-    if (parseInt(roomLocationId) === parseInt(unitLocation) && parseInt(currentRoomTemp) < parseInt(desiredTemp)) {
+    console.log(roomLocationId , unitLocationId);
+    if (parseInt(roomLocationId) === parseInt(unitLocationId) && parseInt(currentRoomTemp) < parseInt(desiredTemp)) {
       sendBack = `{"results" : 1 }`;
-    } else if (parseInt(roomLocationId) === parseInt(unitLocation)  && parseInt(roomTemp) >= parseInt(desiredTemp)) {
+    } else if (parseInt(roomLocationId) === parseInt(unitLocationId)  && parseInt(currentRoomTemp) >= parseInt(desiredTemp)) {
       sendBack = `{"results" : 0 }`;
-    } else if (parseInt(roomLocationId) !== parseInt(unitLocation) ) {
+    } else if (parseInt(roomLocationId) !== parseInt(unitLocationId) ) {
       sendBack = `{"results" : "Error, Locations do not match." }`;
     } else {
       sendBack = `{"results" : "Error." }`;
     }
+    console.log(sendBack);
     res.send(`${sendBack}`);
+
   } else {
+    console.log("bad token")
     res.send(`{ "results" : "Bad Token" }`);
   }
 });

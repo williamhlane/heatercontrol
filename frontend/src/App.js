@@ -12,7 +12,8 @@ function App() {
   let loggedin = true;
   const [mainObject, setMainObject] = useState(defaultOb);
   const [showWhatComp, setShowWhatComp] = useState("main");
-  if (mainObject === defaultOb) {
+
+  const fetchFunc = () => {
     fetch(`${backend}/mainobject`, {
       method: 'GET',
       mode: 'cors',
@@ -28,6 +29,12 @@ function App() {
       console.log(error);
     });
   }
+  if (mainObject === defaultOb) {
+    fetchFunc();
+  }
+  setTimeout(() => {
+    //fetchFunc();
+  }, 30000);
   let locationList = [];
   for (let i = 0; i < mainObject[0].length; i++) {
     locationList.push(mainObject[0][i]);

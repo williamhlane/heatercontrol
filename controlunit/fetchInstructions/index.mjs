@@ -36,7 +36,7 @@ const onoff = (onoff) => {
 	});
 }
 const fetchInstructions = () => {
-	const body = `{ "unitId" : ${parseInt(unitId)}, "token" : "999999999", "timePassedToSrv" : "${Date()}" }`;
+	const body = `{ "unitId" : ${parseInt(unitId)}, "token" : 999999999, "timePassedToSrv" : "${Date()}" }`;
 	fetch(`${url}/unitinstructions`, {
 		method: 'PUT',
 		mode: 'cors',
@@ -46,9 +46,11 @@ const fetchInstructions = () => {
 		},
 		body: body,
 	}).then((res) => {
+		console.log(res);
 		res.json()
-	}).then((res) => {
-		onoff(`${res.onoff}`);///Check GPIO pin number
+	}).then((res2) => {
+		console.log(res2)
+		onoff(`${res2.results}`);
 	}).catch((error) => {
 		writeToLog(`${error}`);
 	})
