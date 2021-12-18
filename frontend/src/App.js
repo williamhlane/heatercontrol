@@ -3,6 +3,10 @@ import Settings from './componites/Settings';
 import Main from './componites/Main';
 import { useState } from "react";
 /*
+Need to check the last time the temperature was updated as
+a pecaution.
+*/
+/*
 NEED TO ADD AUTO GENERATED TOKENS FOR THE UNITS AND A ALERT WHAT THOSE TOKENS ARE WHEN IT IS CREATED 
 WITH LOGIN
 */
@@ -13,7 +17,7 @@ function App() {
   const [mainObject, setMainObject] = useState(defaultOb);
   const [showWhatComp, setShowWhatComp] = useState("main");
 
-  const fetchFunc = () => {
+  const fetchFunc = () => {///CHANGE THIS BACK AND FETCH MAIN OBJECT DIRECTLY IN UNITS.js every 30 seconds, have it display the temp no useState.
     fetch(`${backend}/mainobject`, {
       method: 'GET',
       mode: 'cors',

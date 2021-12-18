@@ -236,7 +236,6 @@ router.post('/unitinstructions', async (req, res, next) => {
 });
 router.put('/unitinstructions', async (req, res, next) => {
   if (parseInt(req.body.token) === parseInt(999999999)) {
-    
     let controlRoomId;
     let desiredTemp;
     let unitLocationId;
@@ -245,17 +244,16 @@ router.put('/unitinstructions', async (req, res, next) => {
     await Units.findOne({
       where:
       {
-        id: req.body.unitId,///CHANGED
+        id: req.body.unitId,
       }
     }).then((results) => {
       controlRoomId = results.controlRoomId;
       desiredTemp = results.desiredTemp;
       unitLocationId = results.locationId;
-      console.log(results);
     }).catch((error) => {
-       sendBack = `{ "results" : "${error}" }`;
+       sendBack = { "results" : `${error}` };
     });
-    if (typeof (controlRoomId) !== 'undefined') {
+    if (controlRoomId !== null) {///NEEDS TO BE TEST BY ASSIGN A UNIT WITHOUT A CONTROL ROOM
       await Rooms.findOne({
         where:
         {
@@ -265,25 +263,23 @@ router.put('/unitinstructions', async (req, res, next) => {
         roomLocationId = results.locationId;
         currentRoomTemp = results.currentTemp;
       }).catch((error) => {
-        sendBack = `{ "results" : "${error}" }`;
+        sendBack = { "results" : `${error}` };
       });
     }
-    console.log(roomLocationId , unitLocationId);
     if (parseInt(roomLocationId) === parseInt(unitLocationId) && parseInt(currentRoomTemp) < parseInt(desiredTemp)) {
-      sendBack = `{"results" : 1 }`;
+      sendBack = {"results" : 1 };
     } else if (parseInt(roomLocationId) === parseInt(unitLocationId)  && parseInt(currentRoomTemp) >= parseInt(desiredTemp)) {
-      sendBack = `{"results" : 0 }`;
+      sendBack = {"results" : 0 };
     } else if (parseInt(roomLocationId) !== parseInt(unitLocationId) ) {
-      sendBack = `{"results" : "Error, Locations do not match." }`;
+      sendBack = {"results" : "Error, Locations do not match." };
     } else {
-      sendBack = `{"results" : "Error." }`;
+      sendBack = {"results" : "Error." };
     }
-    console.log(sendBack);
-    res.send(`${sendBack}`);
-
+    console.log(JSON.stringify(sendBack));
+    res.send(JSON.stringify(sendBack));
   } else {
     console.log("bad token")
-    res.send(`{ "results" : "Bad Token" }`);
+    res.send({ "results" : "Bad Token" });
   }
 });
 router.put('/updatetemp', async (req, res, next) => {

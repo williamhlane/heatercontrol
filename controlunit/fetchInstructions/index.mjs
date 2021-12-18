@@ -25,7 +25,7 @@ const onoff = (onoff) => {
 	} else {
 		onoff2 = "off";
 	}
-	exec(`pinset ${onoff2} ${pinNumber}`, (error, stdout, stderr) => {
+	exec(`/usr/sbin/pinset ${onoff2} ${pinNumber}`, (error, stdout, stderr) => {
 		if (error) {
 			writeToLog(error);
 		} else if (stdout) {
@@ -35,7 +35,6 @@ const onoff = (onoff) => {
 		}
 	});
 }
-const fetchInstructions = () => {
 	const body = `{ "unitId" : ${parseInt(unitId)}, "token" : 999999999, "timePassedToSrv" : "${Date()}" }`;
 	fetch(`${url}/unitinstructions`, {
 		method: 'PUT',
@@ -46,14 +45,10 @@ const fetchInstructions = () => {
 		},
 		body: body,
 	}).then((res) => {
+		return res.json()
+	}).then((res) => {
 		console.log(res);
-		res.json()
-	}).then((res2) => {
-		console.log(res2)
-		onoff(`${res2.results}`);
+		onoff(`${res.results}`);
 	}).catch((error) => {
 		writeToLog(`${error}`);
 	})
-
-}
-setTimeout(() => { fetchInstructions(); }, 10000);

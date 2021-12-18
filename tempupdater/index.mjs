@@ -37,7 +37,6 @@ const sendTemp = (temp) => {
 	})
 
 }
-setTimeout(() => {
 	exec(`sudo gettemp -f`, (error, stdout, stderr) => {
 		if (error) {
 			writeToLog(error);
@@ -47,4 +46,4 @@ setTimeout(() => {
 			writeToLog(stderr);
 		}
 	});
-}, 10000);
+
