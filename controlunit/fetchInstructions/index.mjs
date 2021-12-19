@@ -47,8 +47,8 @@ const onoff = (onoff) => {
 	}).then((res) => {
 		return res.json()
 	}).then((res) => {
-		console.log(res);
 		onoff(`${res.results}`);
 	}).catch((error) => {
+		onoff('0');
 		writeToLog(`${error}`);
-	})
+	});

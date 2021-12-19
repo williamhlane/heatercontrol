@@ -59,7 +59,6 @@ const Settings = ({ backend, setMainObject, defaultOb, locationList, unitList, r
         const body = `{ "id" : ${parseInt(document.getElementById('delRoomId').value)}, "timePassedToSrv" : "${Date()}" }`;
         fetchFunction(['DELETE', '/rooms', `${body}`]);
     }
-    console.log(unitList);
     return (
         <div id="settings">
 

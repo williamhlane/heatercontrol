@@ -241,6 +241,7 @@ router.put('/unitinstructions', async (req, res, next) => {
     let unitLocationId;
     let roomLocationId;
     let currentRoomTemp;
+    let timePassedToSrv;
     await Units.findOne({
       where:
       {
@@ -251,7 +252,7 @@ router.put('/unitinstructions', async (req, res, next) => {
       desiredTemp = results.desiredTemp;
       unitLocationId = results.locationId;
     }).catch((error) => {
-       sendBack = { "results" : `${error}` };
+      sendBack = { "results": `${error}` };
     });
     if (controlRoomId !== null) {///NEEDS TO BE TEST BY ASSIGN A UNIT WITHOUT A CONTROL ROOM
       await Rooms.findOne({
@@ -262,29 +263,36 @@ router.put('/unitinstructions', async (req, res, next) => {
       }).then((results) => {
         roomLocationId = results.locationId;
         currentRoomTemp = results.currentTemp;
+        timePassedToSrv = results.timePassedToSrv;
       }).catch((error) => {
-        sendBack = { "results" : `${error}` };
+        sendBack = { "results": `${error}` };
       });
     }
-    if (parseInt(roomLocationId) === parseInt(unitLocationId) && parseInt(currentRoomTemp) < parseInt(desiredTemp)) {
-      sendBack = {"results" : 1 };
-    } else if (parseInt(roomLocationId) === parseInt(unitLocationId)  && parseInt(currentRoomTemp) >= parseInt(desiredTemp)) {
-      sendBack = {"results" : 0 };
-    } else if (parseInt(roomLocationId) !== parseInt(unitLocationId) ) {
-      sendBack = {"results" : "Error, Locations do not match." };
+    const cdate = new Date();
+    if (parseInt(roomLocationId) === parseInt(unitLocationId) && parseInt(currentRoomTemp) < parseInt(desiredTemp) &&
+      (parseInt(cdate.getTime()) - parseInt(timePassedToSrv)) < 300000) {
+      sendBack = { "results": 1 };
+    } else if (parseInt(roomLocationId) === parseInt(unitLocationId) && parseInt(currentRoomTemp) >= parseInt(desiredTemp)) {
+      sendBack = { "results": 0 };
+    } else if (parseInt(roomLocationId) !== parseInt(unitLocationId)) {
+      sendBack = { "results": "Error, Locations do not match." };
+    } else if (parseInt(cdate.getTime()) - parseInt(timePassedToSrv) > 300000) {
+      sendBack =  { "results": "Too much time inbetween updates." };///GO INTO AN ERROR LOG
     } else {
-      sendBack = {"results" : "Error." };
+      sendBack = { "results": "Error." };
     }
     console.log(JSON.stringify(sendBack));
     res.send(JSON.stringify(sendBack));
   } else {
     console.log("bad token")
-    res.send({ "results" : "Bad Token" });
+    res.send({ "results": "Bad Token" });///GO INTO AN ERROR LOG
   }
 });
 router.put('/updatetemp', async (req, res, next) => {
   if (req.body.token === "999999999") {
-    await Rooms.update({ currentTemp: parseInt(req.body.currentTemp), timePassedToSrv: `${req.body.timePassedToSrv}` },
+    const cdate = new Date();
+
+    await Rooms.update({ currentTemp: parseInt(req.body.currentTemp), timePassedToSrv: `${cdate.getTime()}` },
       {
         where: {
           id: req.body.id,

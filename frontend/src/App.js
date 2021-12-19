@@ -3,6 +3,9 @@ import Settings from './componites/Settings';
 import Main from './componites/Main';
 import { useState } from "react";
 /*
+NEED UNITS TO UPDATE STATUS SO ERRORS CAN BE THOWN IF COMUNITCATION IS LOST. 
+*/
+/*
 Need to check the last time the temperature was updated as
 a pecaution.
 */
@@ -12,33 +15,29 @@ WITH LOGIN
 */
 function App() {
   const backend = "http://192.168.0.180:3001";
-  const defaultOb = '[[{"id":0,"locName":"Loading","description": null }][][]]';
+  const defaultOb = "default";//[{"id":0,"locName":"Loading","description": null }, [ {} ], [ {} ] ];
   let loggedin = true;
   const [mainObject, setMainObject] = useState(defaultOb);
   const [showWhatComp, setShowWhatComp] = useState("main");
-
-  const fetchFunc = () => {///CHANGE THIS BACK AND FETCH MAIN OBJECT DIRECTLY IN UNITS.js every 30 seconds, have it display the temp no useState.
-    fetch(`${backend}/mainobject`, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    }).then((responce) => {
-      return responce.json();
-    }).then((responce) => {
-      setMainObject(responce);
-    }).catch((error) => {
-      console.log(error);
-    });
-  }
+  const fetchFunc = () => {
+      fetch(`${backend}/mainobject`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }
+      }).then((responce) => {
+        return responce.json();
+      }).then((responce) => {
+        setMainObject(responce);
+      }).catch((error) => {
+        console.log(error);
+      });
+    }
   if (mainObject === defaultOb) {
     fetchFunc();
   }
-  setTimeout(() => {
-    //fetchFunc();
-  }, 30000);
   let locationList = [];
   for (let i = 0; i < mainObject[0].length; i++) {
     locationList.push(mainObject[0][i]);
@@ -57,11 +56,11 @@ function App() {
     for (let ii = 0; ii < mainObject[2].length; ii++) {
       if (parseInt(mainObject[2][ii].id) === parseInt(mainObject[1][i].controlRoomId)) {
         controlRoomName = mainObject[2][ii].roomName;
-      } 
+      }
     }
-    if(typeof(controlRoomName) === "undefined"){
+    if (typeof (controlRoomName) === "undefined") {
       controlRoomName = "UNSET";
-    } 
+    }
 
     push = {
       "id": mainObject[1][i].id,
