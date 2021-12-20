@@ -35,7 +35,7 @@ const onoff = (onoff) => {
 		}
 	});
 }
-	const body = `{ "unitId" : ${parseInt(unitId)}, "token" : 999999999, "timePassedToSrv" : "${Date()}" }`;
+	const body = `{ "unitId" : ${parseInt(unitId)}, "token" : 999999999 }`;
 	fetch(`${url}/unitinstructions`, {
 		method: 'PUT',
 		mode: 'cors',
@@ -49,6 +49,6 @@ const onoff = (onoff) => {
 	}).then((res) => {
 		onoff(`${res.results}`);
 	}).catch((error) => {
-		onoff('0');
+		onoff(0);
 		writeToLog(`${error}`);
 	});

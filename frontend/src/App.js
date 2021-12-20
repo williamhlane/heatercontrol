@@ -6,10 +6,6 @@ import { useState } from "react";
 NEED UNITS TO UPDATE STATUS SO ERRORS CAN BE THOWN IF COMUNITCATION IS LOST. 
 */
 /*
-Need to check the last time the temperature was updated as
-a pecaution.
-*/
-/*
 NEED TO ADD AUTO GENERATED TOKENS FOR THE UNITS AND A ALERT WHAT THOSE TOKENS ARE WHEN IT IS CREATED 
 WITH LOGIN
 */

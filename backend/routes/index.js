@@ -53,16 +53,16 @@ router.post('/location', async (req, res, next) => {
       description: null
     }).then((results) => {
       console.log(results);
-      res.send(`{ "results" : "Completed" }`);
+      res.send({ "results" : "Completed" });
     }).catch((error) => {
-      res.send(`{ "results" : "${error}" }`);
+      res.send({ "results" : `${error}` });
     });
   } else {
-    res.send(`{"results" : "Location already exists."}`)
+    res.send({"results" : "Location already exists."})
   }
 });
 router.delete('/location', async (req, res, next) => {
-  ////LEFT OFF HERE NEED TO TEST THAT ROOMS AND UNITS ARE BEING DELETED///
+  ////NEED TO TEST THAT ROOMS AND UNITS ARE BEING DELETED///
   let locCount;
   let send;
   await Locations.count({ where: { id: req.body.locationId } }).then((count) => { locCount = count });
@@ -73,15 +73,13 @@ router.delete('/location', async (req, res, next) => {
       }
     }).then((results) => {
       console.log(results);
-      send = `{ "results" : "Completed" }`;
+      send = { "results" : "Completed" };
     }).catch((error) => {
-      send = `{ "results" : "${error}" }`;
+      send = { "results" : "${error}" };
     });
   } else {
-    send = `{"results" : "Location does not exists."}`;
+    send = {"results" : "Location does not exists."};
   }
-
-  ////THE DELETE UNITS WILL GO HERE
   let unitCount;
   await Units.count({ where: { locationId: req.body.locationId } }).then((count) => { unitCount = count });
   if (unitCount > 0) {
@@ -92,10 +90,10 @@ router.delete('/location', async (req, res, next) => {
     }).then((results) => {
       console.log(results);
     }).catch((error) => {
-      console.log(`{ "results" : "${error}" }`);
+      console.log({ "results" : "${error}" });
     });
   } else {
-    console.log(`{"results" : "Unit does not exists."}`)
+    console.log({"results" : "Unit does not exists."})
   }
   //THE DELETE ROOMS WILL GO HERE
   let roomsCount;
@@ -108,12 +106,11 @@ router.delete('/location', async (req, res, next) => {
     }).then((results) => {
       console.log(results);
     }).catch((error) => {
-      console.log(`{ "results" : "${error}" }`);
+      console.log({ "results" : "${error}" });
     });
   } else {
-    console.log(`{"results" : "Location does not exists."}`)
+    console.log({"results" : "Location does not exists."})
   }
-  //////////
   res.send(send);
 });
 
@@ -129,13 +126,13 @@ router.post('/units', async (req, res, next) => {
       controlRoomId: null
     }).then((results) => {
       console.log(results);
-      res.send(`{ "results" : "Completed" }`);
+      res.send({ "results" : "Completed" });
     }).catch((error) => {
       console.log(error);
-      res.send(`{ "results" : "${error}" }`);
+      res.send({ "results" : "${error}" });
     });
   } else {
-    res.send(`{ "results" : "That unit name is taken."}`);
+    res.send({ "results" : "That unit name is taken."});
   }
 });
 
@@ -151,12 +148,12 @@ router.delete('/units', async (req, res, next) => {
       }
     }).then((results) => {
       console.log(results);
-      send = `{ "results" : "Completed" }`;
+      send = { "results" : "Completed" };
     }).catch((error) => {
-      console.log(`{ "results" : "${error}" }`);
+      console.log({ "results" : "${error}" });
     });
   } else {
-    console.log(`{"results" : "Unit does not exists."}`)
+    console.log({"results" : "Unit does not exists."})
   }
   res.send(send);
 });
@@ -172,14 +169,14 @@ router.post('/rooms', async (req, res, next) => {
       currentTemp: req.body.currentTemp,
     }).then((results) => {
       console.log(results);
-      res.send(`{ "results" : "Completed" }`);
+      res.send({ "results" : "Completed" });
     }).catch((error) => {
       console.log(error);
-      res.send(`{ "results" : "Error: ${error}" }`);
+      res.send({ "results" : `Error: ${error}` });
     });
   } else {
     console.log(`${req.body.roomName.toUpperCase()} already exists.`)
-    res.send(`{ "results" : "That room already exists." }`);
+    res.send({ "results" : "That room already exists." });
 
   }
 });
@@ -195,12 +192,12 @@ router.delete('/rooms', async (req, res, next) => {
       }
     }).then((results) => {
       console.log(results);
-      send = `{ "results" : "Completed" }`;
+      send = { "results" : "Completed" };
     }).catch((error) => {
-      send = `{ "results" : "${error}" }`;
+      send = { "results" : "${error}" };
     });
   } else {
-    send = `{"results" : "Rooms do not not exists."}`;
+    send = {"results" : "Rooms do not not exists."};
   }
   res.send(send);
 });
@@ -215,10 +212,10 @@ router.post('/unitinstructions', async (req, res, next) => {
         }
       }).then((results) => {
         console.log(results);
-        res.send(`{ "results" : "Completed" }`);
+        res.send({ "results" : "Completed" });
       }).catch((error) => {
         console.log(error);
-        res.send(`{ "results" : "Error ${error}" }`);
+        res.send({ "results" : "Error ${error}" });
       })
   }
   switch (req.body.doWhat) {
@@ -230,7 +227,7 @@ router.post('/unitinstructions', async (req, res, next) => {
       dbUpdate({ "controlRoomId": parseInt(req.body.roomIdorTemp) });
       break;
     default:
-      res.send(`{ "results" : "Error" }`);
+      res.send({ "results" : "Error" });
   }
 
 });
@@ -277,7 +274,7 @@ router.put('/unitinstructions', async (req, res, next) => {
     } else if (parseInt(roomLocationId) !== parseInt(unitLocationId)) {
       sendBack = { "results": "Error, Locations do not match." };
     } else if (parseInt(cdate.getTime()) - parseInt(timePassedToSrv) > 300000) {
-      sendBack =  { "results": "Too much time inbetween updates." };///GO INTO AN ERROR LOG
+      sendBack = { "results": "Too much time inbetween updates." };///GO INTO AN ERROR LOG
     } else {
       sendBack = { "results": "Error." };
     }
@@ -299,14 +296,14 @@ router.put('/updatetemp', async (req, res, next) => {
         }
       }).then((results) => {
         console.log(`${req.body.id} ${req.body.currentTemp} ${req.body.token} ${req.body.timePassedToSrv} ${results}`);
-        res.send(`{ "results" : "${results}" }`);
+        res.send({ "results" : "${results}" });
         ///LOG TO DB LOG
       }).catch((error) => {
         console.log(error);
-        res.send(`{ "results" : "done" }`);
+        res.send({ "results" : "done" });
       })
   } else {
-    res.send(`{ "results" : "Bad Token" }`);
+    res.send({ "results" : "Bad Token" });
   }
 });
 

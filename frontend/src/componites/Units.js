@@ -30,31 +30,36 @@ const Units = ({ unit, roomList, setMainObject, defaultOb, backend, index }) => 
             </div>
         )
     }
-    setTimeout(async () => {
-        await fetch(`${backend}/mainobject`, {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            }
-        }).then((responce) => {
-            return responce.json();
-        }).then((responce) => {
-            for (let i = 0; i < responce[2].length; i++) {
-                if (parseInt(responce[2][i].id) === parseInt(unit.controlRoomId)) {
-                    if (document.getElementById(index) !== null) {
-                        document.getElementById(index).innerText = "Current Temp: " + responce[2][i].currentTemp;
+   
+    const update = () => {
+        setTimeout(async () => {
+            await fetch(`${backend}/mainobject`, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            }).then((responce) => {
+                return responce.json();
+            }).then((responce) => {
+                for (let i = 0; i < responce[2].length; i++) {
+                    if (parseInt(responce[2][i].id) === parseInt(unit.controlRoomId)) {
+                        if (document.getElementById(index) !== null) {
+                            document.getElementById(index).innerText = "Current Temp: " + responce[2][i].currentTemp;
+                        }
                     }
                 }
-            }
-        }).catch((error) => {
-            console.log(error);
-        });
-    }, 5000);
+            }).catch((error) => {
+                console.log(error);
+            });
+            update();
+        }, 60000);
+    }
+    update();
     let currentTemp;
     roomList.map((room) => {
-        if(parseInt(room.id) === parseInt(unit.controlRoomId)){
+        if (parseInt(room.id) === parseInt(unit.controlRoomId)) {
             currentTemp = room.currentTemp;
         }
         return 0;
